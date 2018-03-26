@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freaking Math Replica</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/mathcss.css">
+
+
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron" id="mainContainer">
+            <div id="questionData" class="center">
+                <div id="numberGroup" class="centerDown">
+                    <div id="timerCount" style="font-size:12px"></div>
+                    <table style="margin:0 auto">
+                        <tr>
+                            <td>
+                                <p id="paraNum1">2</p>
+                                <p>+</p>
+                                <p id="paraNum2">2</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>=</p>
+                                <p id="paraResult">2</p>
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+
+                <div id="buttons">
+                    <button id="correctBtn" class="btn btn-default" type="button"><img style="width:80px" src="images/icons8-checkmark-100.png"></button>
+                    <button id="wrongBtn" class="btn btn-default" type="button"><img style="width:80px"src="images/icons8-delete-100.png"></button>
+                </div>
+
+            </div>
+
+            <div id="gameOverID" class="popupGameHide">
+                <h4>Game Over</h4>
+                <table>
+                    <tr>
+                        <td>New Score:&nbsp;</td>
+                        <td id="newScoreID"> 0</td>
+                    </tr>
+                </table>
+                <br></br>
+                <button id="playAgainBtn" class="btn btn-default">Play Again</button>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</body>
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/notify.min.js"></script>
+<script src="js/timer.min.js"></script>
+
+
+<script>
+    var timerOut = 6000;
+    var scoreCount = 0;
+    var result = false;
+    var tickPressed = false;
+    var crossPressed = false;
+    var maxNumber = 9;
+    var minNumber = 1;
+    var timeInterval = setTimeout(function() {}, 50000);
+
+    randomColor();
+    showNewAdditon();
+
+
+    var correctBtn = document.getElementById("correctBtn");
+    correctBtn.addEventListener('click', function() {
+        tickPressed = true;
+        clearTimeout(timeInterval);
+        if (result === true) {
+            console.log('Correct result');
+
+            randomColor();
+            showNewAdditon();
+
+            document.getElementById("timerCount").textContent = "Time Left: 6 secs";
+            timeInterval = setTimeout(function() {
+                if (tickPressed === false && crossPressed === false) {
+                    gameOver();
+                }
+            }, timerOut);
+            scoreCount++;
+
+        } else {
+            console.log('wrong result');
+            gameOver();
+        }
+
+    })
+
+    var playAgainBtn = document.getElementById("playAgainBtn");
+    playAgainBtn.addEventListener('click', function() {
+        window.location.reload();
+    })
+
+    var wrongBtn = document.getElementById("wrongBtn");
+    wrongBtn.addEventListener('click', function() {
+        crossPressed = true;
+        clearTimeout(timeInterval);
+        if (result === true) {
+            gameOver();
+        } else {
+            console.log('Correct result');
+            randomColor();
+            showNewAdditon();
+            document.getElementById("timerCount").textContent = "Time Left: 6 secs";
+            timeInterval = setTimeout(function() {
+                if (tickPressed === false && crossPressed === false) {
+                    gameOver();
+                }
+            }, timerOut);
+            scoreCount++;
+        }
+    })
+
+    function gameOver() {
+        //  document.getElementById("questionData").innerHTML = "";
+        // $('#buttons').on('click', false);
+        document.getElementById('buttons').style.pointerEvents = 'none';
+        document.getElementById("newScoreID").innerHTML = scoreCount;
+        document.getElementById("gameOverID").className = "popupGameShow";
+    }
+
+    function randomColor() { //function name
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        var bgColor = "rgb(" + r + "," + g + "," + b + ")";
+
+        document.getElementById('mainContainer').style.background = bgColor; // Setting the random color on your div element.
+    }
+
+
+    function showNewAdditon() {
+        var randomBool = Math.random() >= 0.5;
+
+        tickPressed = false;
+        crossPressed = false;
+
+        var randomnumber1 = Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber;
+        var randomnumber2 = Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber;
+        var randomnumber3 = Math.floor(Math.random() * (maxNumber - minNumber + 1)) + minNumber;
+
+        $("#paraNum1").text(randomnumber1);
+        $("#paraNum2").text(randomnumber2);
+
+
+        var sum = randomnumber1 + randomnumber2;
+
+        if (randomBool === true) {
+            $("#paraResult").text(sum);
+            result = true;
+            return result;
+        } else {
+            if (randomnumber3 == sum) {
+                randomnumber3 = Math.abs(sum - maxNumber);
+            }
+            $("#paraResult").text(randomnumber3);
+            result = false;
+            timeleft = 6000;
+            return result;
+        }
+    }
+</script>
+
+
+</html>
